@@ -37,9 +37,17 @@ final class Palette implements Countable, IteratorAggregate
         return \array_slice($this->colors, 0, $limit, true);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public static function fromFilename(string $filename, ?int $backgroundColor = null): Palette
     {
         $image = imagecreatefromstring(file_get_contents($filename));
+
+        if ($image === false) {
+            throw new InvalidArgumentException(sprintf('"%s" is not a valid image', $filename));
+        }
+
         $palette = self::fromGD($image, $backgroundColor);
         imagedestroy($image);
 
